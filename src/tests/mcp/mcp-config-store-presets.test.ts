@@ -16,6 +16,9 @@ describe('MCPConfigStore presets', () => {
     expect(preset).toBeDefined();
     expect(preset.type).toBe('streamable-http');
     expect(preset.url).toBe('https://api.you.com/mcp?profile=free');
+    // No env vars required: the free profile is keyless, so the preset can be
+    // added with a single click from the Connectors settings.
+    expect(preset.requiresEnv ?? []).toHaveLength(0);
   });
 
   it('creates a disabled server config from the You.com preset', () => {
@@ -28,9 +31,10 @@ describe('MCPConfigStore presets', () => {
     // produce an enabled server config on its own.
     expect(config?.enabled).toBe(false);
     expect(config?.id).toMatch(/^mcp-you-search-/);
-    // No env vars required: the free profile is keyless, so the preset can be
-    // added with a single click from the Connectors settings.
-    expect(config?.requiresEnv ?? []).toHaveLength(0);
+    // Keyless remote preset: no command to run and no env values to fill in,
+    // so Quick Add needs nothing from the user beyond the opt-in.
+    expect(config?.command).toBeUndefined();
+    expect(config?.env ?? {}).toEqual({});
   });
 
   it('returns null for an unknown preset key', () => {
