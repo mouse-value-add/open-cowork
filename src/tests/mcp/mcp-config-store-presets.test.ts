@@ -16,11 +16,6 @@ describe('MCPConfigStore presets', () => {
     expect(preset).toBeDefined();
     expect(preset.type).toBe('streamable-http');
     expect(preset.url).toBe('https://api.you.com/mcp?profile=free');
-    // No env vars required: the free profile is keyless, so the preset can be
-    // added with a single click from the Connectors settings.
-    expect(preset.requiresEnv ?? []).toHaveLength(0);
-    // A preset must never enable itself by default.
-    expect((preset as { enabled?: boolean }).enabled).toBeUndefined();
   });
 
   it('creates a disabled server config from the You.com preset', () => {
@@ -29,8 +24,13 @@ describe('MCPConfigStore presets', () => {
     expect(config?.name).toBe('You');
     expect(config?.type).toBe('streamable-http');
     expect(config?.url).toBe('https://api.you.com/mcp?profile=free');
+    // The disabled-by-default opt-in contract lives here: a preset must never
+    // produce an enabled server config on its own.
     expect(config?.enabled).toBe(false);
     expect(config?.id).toMatch(/^mcp-you-search-/);
+    // No env vars required: the free profile is keyless, so the preset can be
+    // added with a single click from the Connectors settings.
+    expect(config?.requiresEnv ?? []).toHaveLength(0);
   });
 
   it('returns null for an unknown preset key', () => {

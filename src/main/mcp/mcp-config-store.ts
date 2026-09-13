@@ -52,6 +52,8 @@ export const MCP_SERVER_PRESETS: Record<
     },
   },
   'you-search': {
+    // Keyless remote web search (You.com free profile). Intentionally disabled
+    // until the user opts in; queries are sent to You.com only when enabled.
     name: 'You',
     type: 'streamable-http',
     url: 'https://api.you.com/mcp?profile=free',
